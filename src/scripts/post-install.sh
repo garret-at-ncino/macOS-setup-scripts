@@ -1,30 +1,33 @@
 #!/bin/bash
 
-# System updates
-brew update && brew upgrade && brew cleanup
+# shellcheck source=utils.sh
+source "$(dirname "$0")/utils.sh"
 
-printf "\n\n============================================================================\n\n"
+brew update 2>>"$ERROR_LOG_FILE" || true
+brew upgrade 2>>"$ERROR_LOG_FILE" || true
+brew cleanup 2>>"$ERROR_LOG_FILE" || true
 
-cat "$(pwd)/src/assets/wolf.txt"
-
-printf "\n\n============================================================================\n\n"
-
-printf "\nPost-install Steps\n"
-
-printf "
-Download the following apps from the App Store.
-    - Kindle
-    - Perplexity
-"
-
-printf "
-Run the following to enable Docker daemon on startup:
-    sudo systemctl start docker.service
-    sudo systemctl enable docker.service
-    sudo usermod -aG docker %s
-    newgrp docker\r" "$USER"
-
-printf "\n\n============================================================================\n\n\r"
-
-printf "Cheers -- system setup is now complete.\n\r"
-printf "Log out and log back in to complete shell change.\n"
+APPLE_ART="$PROJECT_ROOT/src/assets/apple.txt"
+if [[ -f "$APPLE_ART" ]]; then
+    echo
+    printf '  %s\n' \
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    printf '  %s\n' "macOS setup run complete."
+    printf '  %s\n' \
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo
+    cat "$APPLE_ART"
+    echo
+    printf '  %s\n' \
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    printf '  %s\n' "What to do next"
+    printf '  %s\n' \
+        " • Open a new Terminal window or tab so your login shell picks up PATH and tooling."
+    printf '  %s\n' " • If anything looked off, inspect the error log (last 80 lines):"
+    error_log_tail_cmd="$(printf 'tail -n 80 %q' "$ERROR_LOG_FILE")"
+    printf '     %s\n' "${error_log_tail_cmd}"
+    printf '  %s\n' " • Full docs: https://github.com/garretpatten/macOS-setup-scripts#readme"
+    printf '  %s\n' \
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo
+fi

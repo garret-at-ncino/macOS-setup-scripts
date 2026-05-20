@@ -1,63 +1,38 @@
 #!/bin/bash
 
-# Install Zsh
-if [[!  -d "usr/local/cellar/zsh/" ]]; then
-    brew install zsh
+# shellcheck source=utils.sh
+source "$(dirname "$0")/utils.sh"
+
+brew install jandedobbeleer/oh-my-posh/oh-my-posh 2>>"$ERROR_LOG_FILE" || true
+brew install ghostty zsh tmux zsh-autosuggestions zsh-syntax-highlighting 2>>"$ERROR_LOG_FILE" || true
+brew install --cask font-awesome-terminal-fonts font-fira-code font-meslo-lg-nerd-font font-powerline-symbols 2>>"$ERROR_LOG_FILE" || true
+
+DOTFILES_ROOT="$PROJECT_ROOT/src/dotfiles"
+
+if [[ -d "$DOTFILES_ROOT/config" ]]; then
+    copy_directory_safe "$DOTFILES_ROOT/config/ghostty" "$HOME/.config/ghostty"
+    copy_directory_safe "$DOTFILES_ROOT/config/oh-my-posh" "$HOME/.config/oh-my-posh"
+    # home/.tmux.conf sources ~/.config/tmux/includes/base.conf (modular layout; see dotfiles README).
+    copy_directory_safe "$DOTFILES_ROOT/config/tmux" "$HOME/.config/tmux"
 fi
 
-# Change User Shells to Zsh
-chsh -s $(which zsh)
-sudo chsh -s $(which zsh)
-
-### Install fonts ###
-
-# Awesome Terminal Fonts
-if [[ ! -f "$HOME/Library/Fonts/SourceCodePro+Powerline+Awesome+Regular.ttf" ]]; then
-    brew install --cask font-awesome-terminal-fonts
+if [[ -d "$DOTFILES_ROOT/home" ]]; then
+    copy_file_safe "$DOTFILES_ROOT/home/.tmux.conf" "$HOME/.tmux.conf"
+    copy_file_safe "$DOTFILES_ROOT/home/.zshrc" "$HOME/.zshrc"
 fi
 
-# Fira Code Fonts
-if [[ ! -f "$HOME/Library/Fonts/FiraCode-Regular.ttf" ]]; then
-    brew tap homebrew/cask-fonts
-    brew install --cask font-fira-code
+# home/.zshrc reads this cache to resolve DOTFILES and source home/zsh/<os>.zsh.
+if [[ -d "$DOTFILES_ROOT/home/zsh" ]]; then
+    if [[ ! -f "$HOME/.dotfiles_path" ]]; then
+        printf '%s\n' "$DOTFILES_ROOT" > "$HOME/.dotfiles_path"
+    else
+        existing_dotfiles_root=""
+        IFS= read -r existing_dotfiles_root < "$HOME/.dotfiles_path" || true
+        if [[ -z "$existing_dotfiles_root" ]] || [[ ! -d "$existing_dotfiles_root/home/zsh" ]]; then
+            printf '%s\n' "$DOTFILES_ROOT" > "$HOME/.dotfiles_path"
+        fi
+    fi
 fi
 
-# Meslo Nerd Fonts
-if [[ ! -f "$HOME/Library/Fonts/MesloLFMNerdFont-Regular.ttf" ]]; then
-    brew install --cask font-meslo-lg-nerd-font
-fi
-
-# Powerline Fonts
-if [[ ! -f "$HOME/Library/Fonts/PowerlineSymbols.otf" ]]; then
-    brew cask install font-powerline-symbols
-fi
-
-### oh-my-posh ###
-if [[ ! -f "/opt/homebrew/bin/oh-my-posh" ]]; then
-    brew install jandedobbeleer/oh-my-posh/oh-my-posh
-fi
-
-### Zsh Plugins ###
-
-# Autosuggestions
-if [[ ! -d "/opt/homebrew/share/zsh-autosuggestions/" ]]; then
-    brew install zsh-autosuggestions
-fi
-
-# Syntax Highlighting
-if [[ ! -d "/opt/homebrew/share/zsh-syntax-highlighting/" ]]; then
-    brew install zsh-syntax-highlighting
-fi
-
-### Terminal Configuration ###
-
-# Configure Alacritty
-if [[ ! -d "$HOME/.config/alacritty/" ]]; then
-    mkdir -p "$HOME/.config/alacritty"
-    git clone https://github.com/alacritty/alacritty-theme "$HOME/.config/alacritty/"
-    touch "$HOME/.config/alacritty/alacritty.toml"
-    cp "$(pwd)/src/dotfiles/alacritty/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml"
-fi
-
-# Update ~/.zshrc
-cp "$(pwd)/src/dotfiles/oh-my-posh/.zshrc" "$HOME/.zshrc"
+chsh -s "$(command -v zsh)" 2>>"$ERROR_LOG_FILE" || true
+sudo chsh -s "$(command -v zsh)" 2>>"$ERROR_LOG_FILE" || true

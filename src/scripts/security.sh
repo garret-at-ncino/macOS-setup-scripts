@@ -1,41 +1,29 @@
 #!/bin/bash
 
-### Authentication & Secrets Management ###
+# shellcheck source=utils.sh
+source "$(dirname "$0")/utils.sh"
 
-# 1Password and 1Password CLI
-caskApps=("1password" "1password-cli")
-for app in ${caskApps[@]}; do
-    if [[ ! -d "usr/local/Caskroom/$app/" ]]; then
-        brew install --cask "$app"
-    fi
-done
+brew install --cask 1password 1password-cli 2>>"$ERROR_LOG_FILE" || true
+brew install openvpn 2>>"$ERROR_LOG_FILE" || true
+brew install --cask protonvpn signal 2>>"$ERROR_LOG_FILE" || true
+brew install exiftool nmap 2>>"$ERROR_LOG_FILE" || true
+brew install --cask burp-suite zap 2>>"$ERROR_LOG_FILE" || true
 
-### Defensive Security ###
-
-# Firewall
-sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
-
-### Payloads ###
-
-# Payloads All the Things
-git clone https://github.com/swisskyrepo/PayloadsAllTheThings "$HOME/Hacking/"
-
-# SecLists
-git clone https://github.com/danielmiessler/SecLists "$HOME/Hacking/"
-
-### Tools ###
-
-# Burp Suite
-if [[ ! -d "usr/local/Caskroom/burp-suite/" ]]; then
-    brew install --cask burp-suite
+# Install Proton Pass CLI
+curl -fsSL https://proton.me/download/pass-cli/install.sh | bash 2>>"$ERROR_LOG_FILE" || true
+export PATH="/Users/garret/.local/bin:$PATH"
+# Add PATH to .zshrc if not already present ($PATH must expand when zsh reads .zshrc, not here)
+path_line="export PATH=\"/Users/garret/.local/bin:\$PATH\""
+if ! grep -qF "$path_line" "$HOME/.zshrc" 2>/dev/null; then
+    echo "$path_line" >> "$HOME/.zshrc" 2>>"$ERROR_LOG_FILE" || true
 fi
 
-# Network Mapper
-if [[ ! -d "usr/local/cellar/nmap/" ]]; then
-    brew install nmap
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on 2>>"$ERROR_LOG_FILE" || true
+
+if [[ ! -d "$HOME/Hacking/PayloadsAllTheThings" ]]; then
+    git clone https://github.com/swisskyrepo/PayloadsAllTheThings "$HOME/Hacking/PayloadsAllTheThings" 2>>"$ERROR_LOG_FILE" || true
 fi
 
-# ZAP
-if [[ ! -d "usr/local/Caskroom/zap/" ]]; then
-    brew install --cask zap
+if [[ ! -d "$HOME/Hacking/SecLists" ]]; then
+    git clone https://github.com/danielmiessler/SecLists "$HOME/Hacking/SecLists" 2>>"$ERROR_LOG_FILE" || true
 fi

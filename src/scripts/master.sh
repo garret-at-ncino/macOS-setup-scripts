@@ -1,26 +1,20 @@
 #!/bin/bash
 
-sh "$(pwd)/src/scripts/pre-install.sh"
+# shellcheck source=utils.sh
+source "$(dirname "$0")/utils.sh"
 
-# Home directory customization
-sh "$(pwd)/src/scripts/organizeHome.sh"
+if [[ "$OSTYPE" != "darwin"* ]]; then
+    log_error "This script is designed for macOS only. Current OS: $OSTYPE"
+    exit 1
+fi
 
-# CLI tools
-sh "$(pwd)/src/scripts/cli.sh"
-
-# Streaming and video applications
-bash "$(pwd)/src/scripts/media.sh"
-
-# Productivity programs
-sh "$(pwd)/src/scripts/productivity.sh"
-
-# Security and privacy utilities
-sh "$(pwd)/src/scripts/security.sh"
-
-# Dev tools
-sh "$(pwd)/src/scripts/dev.sh"
-
-# Shell setup
-zsh "$(pwd)/src/scripts/shell.sh"
-
-sh "$(pwd)/src/scripts/post-install.sh"
+bash "$(dirname "$0")/pre-install.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute pre-install.sh"
+bash "$(dirname "$0")/system-config.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute system-config.sh"
+bash "$(dirname "$0")/organizeHome.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute organizeHome.sh"
+bash "$(dirname "$0")/cli.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute cli.sh"
+bash "$(dirname "$0")/media.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute media.sh"
+bash "$(dirname "$0")/productivity.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute productivity.sh"
+bash "$(dirname "$0")/dev.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute dev.sh"
+bash "$(dirname "$0")/security.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute security.sh"
+zsh "$(dirname "$0")/shell.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute shell.sh"
+bash "$(dirname "$0")/post-install.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute post-install.sh"

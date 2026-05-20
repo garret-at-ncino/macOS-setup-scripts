@@ -1,18 +1,18 @@
 #!/bin/bash
 
-# Xcode Command Line Tools Fresh Install
-xcodePath="/Library/Developer/CommandLineTools/"
+# shellcheck source=utils.sh
+source "$(dirname "$0")/utils.sh"
 
-if [[ -d "$xcodePath" ]]; then
-    sudo rm -rf "$xcodePath"
+if ! command -v brew >/dev/null 2>&1; then
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" 2>>"$ERROR_LOG_FILE" || true
 fi
 
-sudo xcode-select --install
-sudo xcodebuild -license accept
+brew update 2>>"$ERROR_LOG_FILE" || true
+brew upgrade 2>>"$ERROR_LOG_FILE" || true
+brew cleanup 2>>"$ERROR_LOG_FILE" || true
+brew analytics off 2>>"$ERROR_LOG_FILE" || true
 
-# Homebrew package manager
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-brew analytics off
-
-# System updates
-brew update && brew upgrade && brew cleanup
+sudo rm -rf /Library/Developer/CommandLineTools/ 2>>"$ERROR_LOG_FILE" || true
+sudo xcode-select --install 2>>"$ERROR_LOG_FILE" || true
+sudo xcodebuild -license accept 2>>"$ERROR_LOG_FILE" || true
+softwareupdate --all --install --force 2>>"$ERROR_LOG_FILE" || true

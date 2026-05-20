@@ -1,16 +1,6 @@
 #!/bin/bash
 
-# Spotify
-if [[ ! -d "usr/local/Caskroom/spotify/" ]]; then
-    brew install --cask spotify
-fi
+# shellcheck source=utils.sh
+source "$(dirname "$0")/utils.sh"
 
-# VLC
-if [[ ! -d "usr/local/Caskroom/vlc/" ]]; then
-    brew install --cask vlc
-fi
-
-# Zoom
-if [[ ! -d "usr/local/Caskroom/zoom/" ]]; then
-    brew install --cask zoom
-fi
+brew install --cask brave-browser duckduckgo spotify vlc 2>>"$ERROR_LOG_FILE" || true

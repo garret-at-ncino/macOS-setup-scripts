@@ -1,8 +1,6 @@
 #!/bin/bash
 
-cliTools=("bat" "curl" "exiftool" "eza" "fastfetch" "fd" "git" "htop" "jq" "neovim" "openvpn" "ripgrep" "tmux" "vim" "wget" "zsh")
-for tool in ${cliTools[@]}; do
-    if [[ ! -d "/usr/local/cellar/$tool/" ]]; then
-        brew install "$tool"
-    fi
-done
+# shellcheck source=utils.sh
+source "$(dirname "$0")/utils.sh"
+
+brew install bat curl exiftool eza fastfetch fd git htop jq neovim openvpn ripgrep tmux vim wget zsh 2>>"$ERROR_LOG_FILE" || true
