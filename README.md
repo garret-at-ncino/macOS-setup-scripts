@@ -15,9 +15,11 @@ Homebrew installs, shell and Terminal setup, optional dotfiles, and opinionated<
 </p>
 
 <p align="center">
-  <a href="./LICENSE"><img src="https://img.shields.io/github/license/garretpatten/macOS-setup-scripts?style=flat-square" alt="License" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/github/license/garret-at-ncino/macOS-setup-scripts?style=flat-square" alt="License" /></a>
   <img src="https://img.shields.io/badge/platform-macOS-0071e3?style=flat-square&logo=apple&logoColor=white" alt="Runs on macOS" />
 </p>
+
+> **Fork notice**: This is a work-focused fork of [garretpatten/macOS-setup-scripts](https://github.com/garretpatten/macOS-setup-scripts), maintained by [@garret-at-ncino](https://github.com/garret-at-ncino). It trims personal tools and adds work-oriented defaults.
 
 <!-- markdownlint-enable MD033 MD041 -->
 
@@ -48,7 +50,7 @@ Homebrew formulas and casks, system-wide defaults, and repeatability you can tru
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/garretpatten/macOS-setup-scripts
+   git clone https://github.com/garret-at-ncino/macOS-setup-scripts
    cd macOS-setup-scripts
    ```
 
@@ -233,7 +235,9 @@ tail -n 50 setup_errors.log
 
 ## Maintainers
 
-[@garretpatten](https://github.com/garretpatten/)
+[@garret-at-ncino](https://github.com/garret-at-ncino/) — work fork maintainer
+
+Upstream project: [@garretpatten](https://github.com/garretpatten/macOS-setup-scripts)
 
 For questions, bug reports, or feature requests, open an issue on this repository.
 
