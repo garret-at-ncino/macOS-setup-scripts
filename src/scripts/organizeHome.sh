@@ -1,17 +1,9 @@
 #!/bin/bash
 
-# Remove unneeded directories
-directoriesToRemove=("Music" "Public" "Templates" "Videos")
-for directoryToRemove in ${directoriesToRemove[@]}; do
-    if [[ ! -d "$HOME/$directoryToRemove/" ]]; then
-        rmdir "$HOME/$directoryToRemove"
-    fi
-done
+# shellcheck source=utils.sh
+source "$(dirname "$0")/utils.sh"
 
-# Add needed directories
-directoriesToCreate=("Books" "Hacking" "Projects")
-for directoryToCreate in ${directoriesToCreate[@]}; do
-    if [[ ! -d "$HOME/$directoryToCreate/" ]]; then
-        mkdir "$HOME/$directoryToCreate"
-    fi
-done
+if [[ -d "$HOME/Templates" ]]; then
+    rmdir "$HOME/Templates" 2>>"$ERROR_LOG_FILE" || true
+fi
+mkdir -p "$HOME/Books" "$HOME/Games" "$HOME/Hacking" "$HOME/Projects" 2>>"$ERROR_LOG_FILE" || true
