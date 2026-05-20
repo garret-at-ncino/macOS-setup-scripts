@@ -10,8 +10,9 @@ brew install src-cli 2>>"$ERROR_LOG_FILE" || true
 
 curl -sSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash 2>>"$ERROR_LOG_FILE" || true
 
-if [[ ! -d "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" ]]; then
-    git clone https://github.com/wbthomason/packer.nvim "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" 2>>"$ERROR_LOG_FILE" || true
+if [[ ! -d "$HOME/.local/share/nvim/lazy/lazy.nvim" ]]; then
+    git clone --filter=blob:none --branch=stable https://github.com/folke/lazy.nvim.git \
+        "$HOME/.local/share/nvim/lazy/lazy.nvim" 2>>"$ERROR_LOG_FILE" || true
 fi
 
 DOTFILES_ROOT="$PROJECT_ROOT/src/dotfiles"

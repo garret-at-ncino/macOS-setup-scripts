@@ -173,29 +173,29 @@ Creates `~/Books`, `~/Games`, `~/Hacking`, `~/Projects`; removes empty `~/Templa
 
 ### CLI tools (`cli.sh`)
 
-bat, curl, eza, fastfetch, fd, git, htop, jq, ripgrep, vim, wget
+bat, curl, eza, fastfetch, fd, git, htop, jq, neovim, ripgrep, tmux, vim, wget, zsh
 
 ### Media (`media.sh`)
 
-Brave Browser, DuckDuckGo, Spotify, VLC
+Google Chrome, VLC
 
 ### Productivity (`productivity.sh`)
 
-- **Homebrew casks**: Balena Etcher, Google Gemini (desktop), Notion, Proton Drive, Proton Mail, Standard Notes, Zoom
+- **Homebrew casks**: Claude, Standard Notes, Todoist, Zoom
 - **Homebrew formula**: Raycast
 
 ### Development (`dev.sh`)
 
-- **Homebrew formulas**: Node, Python 3.12, Colima, Docker, Docker Compose, GitHub CLI (`gh`), Neovim, Podman, Semgrep, ShellCheck, Tree-sitter, Angular CLI
+- **Homebrew formulas**: Node, NVM, Python 3.12, Colima, Docker, Docker Compose, GitHub CLI (`gh`), Neovim, Podman, Semgrep, ShellCheck, Tree-sitter, Angular CLI
 - **Homebrew casks**: Postman, Visual Studio Code
 - **Other Homebrew**: Sourcegraph app (from `sourcegraph/app` tap), Sourcegraph CLI (`src-cli`)
-- **Also**: NVM (official install script), `packer.nvim` for Neovim, optional Neovim / Vim / VS Code config from `src/dotfiles/`, global Git user settings and credential helper, `colima start`
+- **Also**: `lazy.nvim` bootstrapped for Neovim, optional Neovim / Vim / VS Code config from `src/dotfiles/`, global Git user settings and credential helper, `colima start`
 
 ### Security (`security.sh`)
 
-- **Homebrew casks**: 1Password, 1Password CLI, Proton VPN, Signal, Burp Suite, OWASP ZAP
-- **Homebrew formulas**: OpenVPN, ExifTool, Nmap
-- **Also**: Proton Pass CLI (install script), clones **PayloadsAllTheThings** and **SecLists** into `~/Hacking/`, enables Application Firewall
+- **Homebrew casks**: 1Password, 1Password CLI, Signal, Burp Suite, OWASP ZAP
+- **Homebrew formulas**: ExifTool, Nmap
+- **Also**: clones **PayloadsAllTheThings** and **SecLists** into `~/Hacking/`, enables Application Firewall
 
 ### Shell and terminal (`shell.sh`)
 
