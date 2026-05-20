@@ -23,9 +23,8 @@ jobs:
 
       - name: Run setup scripts
         run: |
-          # Skip pre-install.sh as it installs OS updates and Xcode Command Line Tools,
-          # which takes too long in CI and is safe to assume works (Apple-provided commands).
-          # GitHub Actions macOS runners already have these installed.
+          # Skip pre-install.sh - installs OS updates and Xcode CLT,
+          # which takes too long in CI (Apple-provided; runners have these).
           cd src/scripts
           source utils.sh
           bash system-config.sh 2>>"$ERROR_LOG_FILE" || true
@@ -44,17 +43,27 @@ jobs:
           # Only show actual errors, not warnings or informational messages
           # Look for lines that indicate real failures:
           # - Lines starting with "Error:" (not "Warning:")
-          # - Fatal errors (excluding expected network issues and colima VM errors in CI)
+          # - Fatal errors (excluding expected network/colima VM errors in CI)
           # - Exit status errors (excluding GitHub Actions messages)
           # - Actual failure messages
           ERROR_LOG="setup_errors.log"
           if [[ -f "$ERROR_LOG" ]] && [[ -s "$ERROR_LOG" ]]; then
             FILTERED_LOG=$(mktemp)
             # First, remove function definitions and other noise
-            grep -v -E "(^[a-zA-Z_][a-zA-Z0-9_]* \(\)|^local |^mkdir -p|^cp |^curl |^if \[\[|^then|^else|^fi|^return |^export |^==> Fetching|^🍺.*was successfully installed)" "$ERROR_LOG" | \
-              # Extract only actual errors, excluding known CI-safe errors
-              grep -E "(^Error:|^\[.*\] \[ERROR\]|fatal error|fatal:.*error|exit status [1-9]|exit code [1-9]|Failed to|failed to|FAILED)" | \
-              grep -v -E "(fatal: unable to access.*Could not resolve host|chsh:.*Credentials|chsh:.*PAM|chsh:.*password|time=.*level=fatal.*colima|time=.*level=fatal.*error starting vm|Error: Process completed with exit code)" | \
+            NOISE="(^[a-zA-Z_][a-zA-Z0-9_]* \(\)|^local |^mkdir -p|"
+            NOISE+="^cp |^curl |^if \[\[|^then|^else|^fi|^return |"
+            NOISE+="^export |^==> Fetching|^🍺.*was successfully installed)"
+            ERRORS="(^Error:|^\[.*\] \[ERROR\]|fatal error|fatal:.*error|"
+            ERRORS+="exit status [1-9]|exit code [1-9]|"
+            ERRORS+="Failed to|failed to|FAILED)"
+            SAFE="(fatal: unable to access.*Could not resolve host|"
+            SAFE+="chsh:.*Credentials|chsh:.*PAM|chsh:.*password|"
+            SAFE+="time=.*level=fatal.*colima|"
+            SAFE+="time=.*level=fatal.*error starting vm|"
+            SAFE+="Error: Process completed with exit code)"
+            grep -v -E "$NOISE" "$ERROR_LOG" | \
+              grep -E "$ERRORS" | \
+              grep -v -E "$SAFE" | \
               grep -v '^[[:space:]]*$' > "$FILTERED_LOG" || true
 
             if [[ -s "$FILTERED_LOG" ]]; then
